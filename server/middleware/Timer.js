@@ -1,10 +1,13 @@
 const schedule = require("node-schedule");
 const axios = require("axios");
 
+const rule = new schedule.RecurrenceRule();
+rule.second = new schedule.Range(0, 59, 35);
+
 const Timer = () => {
-  schedule.scheduleJob("*/5 * * * *", () => {
+  schedule.scheduleJob(rule, () => {
     axios
-      .get("https://auth-api-gmxb.onrender.com")
+      .get(process.env.API)
       .then((response) => {
         console.log(response.data);
       })
