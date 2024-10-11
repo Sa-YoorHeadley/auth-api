@@ -1,0 +1,34 @@
+{
+  "name": "auth-api",
+  "version": "1.0.0",
+  "description": "Auth API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js -w server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {},
+  "dependencies": {
+    "auth-api": "file:",
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "date-fns": "^2.30.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "express-rate-limit": "^6.11.2",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.7.1",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.15",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
