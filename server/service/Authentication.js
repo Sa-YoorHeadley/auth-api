@@ -61,6 +61,26 @@ const QueryLogin = async (userData) => {
     })
 }
 
+const QueryLoginEmail = async (userData) => {
+    return new Promise((resolve, reject) =>{
+        const {emailAddress, password} = userData
+
+        User.findOne({ emailAddress }, '_id userName firstName lastName password emailAddress')
+        .then(user => {
+            if(!user) { return reject([{type: "Login Credentials", message: "Invalid Email Address/Password Combination"}]) }
+            bcrypt.compare(password, user.password)
+            .then(auth => {
+                if(auth) { return resolve({_id: user._id, userName: user.userName, firstName: user.firstName, lastName: user.lastName, emailAddress: user.emailAddress}) }
+                return reject([{type: "Login Credentials", message: "Invalid Email Address/Password Combination"}])
+            })
+            .catch(error => reject({message: error}))
+        })
+        .catch(error => {
+            return reject(error) 
+        })
+    })
+}
+
 const QueryByRefreshToken = (refreshToken) => {
     return new Promise(async (resolve, reject) =>{
 
@@ -75,4 +95,4 @@ const QueryByRefreshToken = (refreshToken) => {
     })
 }
 
-module.exports = { InsertUser, QueryLogin, UpdateTokenById, QueryByRefreshToken } 
+module.exports = { InsertUser, QueryLogin, QueryLoginEmail, UpdateTokenById, QueryByRefreshToken } 

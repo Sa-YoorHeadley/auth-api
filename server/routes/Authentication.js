@@ -3,6 +3,7 @@ const router = express.Router();
 
 const {
   LoginUser,
+  LoginUserEmail,
   RegisterUser,
   LogoutUser,
   RefreshToken,
@@ -12,6 +13,7 @@ const {
 const LoginLimiter = require("../middleware/LoginLimiter");
 
 router.post("/login", LoginLimiter, LoginUser);
+router.post("/login/email", LoginLimiter, LoginUserEmail);
 router.post("/register", RegisterUser);
 router.get("/logout", LogoutUser);
 router.get("/refresh-token", RefreshToken);

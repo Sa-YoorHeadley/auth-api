@@ -33,6 +33,11 @@ const loginSchema =  Joi.object({
     password: Joi.string().min(6).trim().required().label('Password'),
 })
 
+const loginEmailSchema =  Joi.object({
+    emailAddress: Joi.string().max(50).trim().email().lowercase().required().label('Email Address'),
+    password: Joi.string().min(6).trim().required().label('Password'),
+})
+
 const resetPasswordSchema =  Joi.object({
     userId: Joi.string().min(6).trim().required().label('User ID'),
     token: Joi.string().trim().required().label('Reset Token'),
@@ -85,6 +90,19 @@ const ValidateResetPassword = (resetData) => {
 const ValidateLogin = (userData) => {
     return new Promise((resolve, reject) =>{
         const { error, value } = loginSchema.validate(userData, {abortEarly: false})
+
+        if(error) { 
+            const errors = error.details.map(error => { return {type: error.context.label, message: error.message} })
+            return reject(errors)
+        } else {
+            return resolve(value)
+        }
+    })
+}
+
+const ValidateLoginEmail = (userData) => {
+    return new Promise((resolve, reject) =>{
+        const { error, value } = loginEmailSchema.validate(userData, {abortEarly: false})
 
         if(error) { 
             const errors = error.details.map(error => { return {type: error.context.label, message: error.message} })
@@ -154,4 +172,4 @@ const ValidatePasswordPatch = (_id, passwordData) => {
 
 
 
-module.exports = { ValidateRegistration, ValidateLogin, ValidateResetPassword, ValidateProfilePatch, ValidatePasswordPatch } 
+module.exports = { ValidateRegistration, ValidateLogin, ValidateLoginEmail, ValidateResetPassword, ValidateProfilePatch, ValidatePasswordPatch } 

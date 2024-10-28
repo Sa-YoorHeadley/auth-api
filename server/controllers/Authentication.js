@@ -1,12 +1,13 @@
 const {
   InsertUser,
   QueryLogin,
+  QueryLoginEmail,
   UpdateTokenById,
   QueryByRefreshToken,
 } = require("../service/Authentication");
 const {
   ValidateRegistration,
-  ValidateLogin,
+  ValidateLoginEmail,
   ValidateResetPassword,
 } = require("../service/Validation");
 const {
@@ -68,8 +69,49 @@ const LoginUser = async (req, res) => {
   }
 };
 
+const LoginUserEmail = async (req, res) => {
+  const userData = req.body;
+  try {
+    ValidateLoginEmail(userData)
+      .then(async (userData) => {
+        const user = await QueryLoginEmail(userData);
+        const accessToken = await createToken(
+          user._id.toString(),
+          process.env.JWT_ACCESS_TOKEN,
+          "15m"
+        );
+        const refreshToken = await createToken(
+          user._id.toString(),
+          process.env.JWT_REFRESH_TOKEN,
+          "1d"
+        );
+        const update = await UpdateTokenById(user._id.toString(), refreshToken);
+
+        //Options { maxAge: 1000 * 60 * 60 * 24, secure: true, httpOnly: true }
+        res.cookie("jwt", refreshToken, {
+          maxAge: 1000 * 60 * 60 * 24,
+          secure: true,
+          httpOnly: true,
+          sameSite: "none",
+        });
+        res
+          .status(202)
+          .json({ user, accessToken, message: "Login successful" });
+      })
+      .catch((error) => {
+        console.log(error);
+        res.status(400).json(error);
+      });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  }
+};
+
 const RegisterUser = async (req, res) => {
   const userData = req.body;
+
+  console.log(userData);
 
   try {
     ValidateRegistration(userData)
@@ -228,6 +270,7 @@ const ResetPassword = async (req, res) => {
 };
 module.exports = {
   LoginUser,
+  LoginUserEmail,
   RegisterUser,
   LogoutUser,
   RefreshToken,
