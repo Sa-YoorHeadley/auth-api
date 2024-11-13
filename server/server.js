@@ -14,10 +14,11 @@ const errorHandler = require("./middleware/errorHandler");
 
 //App initialization
 const app = express();
+const otherIps = process.env.OTHER_IPS.split(" ");
 app.use(Logger);
 app.use(
   cors({
-    origin: ["http://127.0.0.1:5173", "http://localhost:5173"],
+    origin: ["http://127.0.0.1:5173", "http://localhost:5173", ...otherIps],
     credentials: true,
     exposedHeaders: ["set-cookie"],
   })
